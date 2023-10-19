@@ -1,5 +1,6 @@
 package api.tests;
 
+import api.Generator.PayloadGenerator;
 import api.endpoints.UserEndpoints;
 import api.payload.LoginPayload;
 import api.payload.User;
@@ -8,63 +9,69 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 public class UserTests {
     Faker faker;
     User userPayload;
     LoginPayload loginPayload;
     String BearerToken;
+    PayloadGenerator payloadGenerator;
 
     @BeforeClass
     public void setup() {
         faker = new Faker();
-        userPayload = new User();
-        userPayload.setFirstName(faker.name().firstName());
-        userPayload.setLastName(faker.name().lastName());
-        userPayload.setEmail(faker.internet().safeEmailAddress());
-        userPayload.setPassword(faker.internet().password());
+        payloadGenerator = new PayloadGenerator();
+        userPayload = payloadGenerator.userPayloadGenerator();
     }
 
     @Test(priority = 1)
     public void addUserTest() {
+        System.out.println("--Adding user--");
         Response response = UserEndpoints.createUser(userPayload);
-        Assert.assertEquals(response.getStatusCode(), 201);
+        response.then().log().body().statusCode(201);
         BearerToken = response.jsonPath().getString("token");
     }
 
     @Test(priority = 2)
     public void getUserTest() {
+        System.out.println("--Retrieving user--");
         Response response = UserEndpoints.getUser(BearerToken);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().log().body().statusCode(200);
     }
 
     @Test(priority = 3)
     public void updateUserTest() {
-        userPayload.setFirstName(faker.name().firstName());
-        userPayload.setLastName(faker.name().lastName());
+        System.out.println("--Updating user--");
+        userPayload.setFirstName("fName");
+        userPayload.setLastName("lName");
         Response response = UserEndpoints.updateUser(userPayload, BearerToken);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().log().body().statusCode(200);
+
+        Assert.assertEquals(userPayload.getFirstName(),"fName");
+        Assert.assertEquals(userPayload.getLastName(),"lName");
     }
 
     @Test(priority = 4)
     public void logOutTest() {
+        System.out.println("--Logging out the user--");
         Response response = UserEndpoints.logOutUser(BearerToken);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().statusCode(200);
     }
 
     @Test(priority = 5)
     public void logInTest() {
+        System.out.println("--Logging In user--");
         loginPayload = new LoginPayload();
         loginPayload.setEmail(userPayload.getEmail());
         loginPayload.setPassword(userPayload.getPassword());
         Response response = UserEndpoints.logInUser(loginPayload);
         BearerToken = response.jsonPath().getString("token");
-        Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().log().body().statusCode(200);
     }
 
     @Test(priority = 6)
     public void deleteUserTest() {
+        System.out.println("--Deleting the user--");
         Response response = UserEndpoints.deleteUser(BearerToken);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().statusCode(200);
     }
 }
