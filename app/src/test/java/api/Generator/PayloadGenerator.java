@@ -3,16 +3,12 @@ package api.Generator;
 import api.payload.Contact;
 import api.payload.User;
 import com.github.javafaker.Faker;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PayloadGenerator {
     Contact contactPayload;
     Contact contactPayloadPut;
-    Contact  contactUpdatePayload;
     User userPayload;
     Faker faker;
     public Contact ContactPayloadGenerator(){

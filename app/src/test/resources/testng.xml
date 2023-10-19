@@ -1,0 +1,26 @@
+<suite name="Regression Suite">
+    <test name="Regression Test">
+        <classes>
+            <class name="api.tests.UserTests">
+                <methods>
+                    <include name="addUserTest"/>
+                    <include name="getUserTest"/>
+                    <include name="updateUserTest"/>
+                    <include name="logOutTest"/>
+                    <include name="logInTest"/>
+                    <include name="deleteUserTest"/>
+                </methods>
+            </class>
+            <class name="api.tests.ContactTests">
+                <methods>
+                    <include name="addContactTest"/>
+                    <include name="getContactsList"/>
+                    <include name="getContact"/>
+                    <include name="updateContactsUsingPutMethod"/>
+                    <include name="updateContactUsingPatchMethod"/>
+                    <include name="deleteContact"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
